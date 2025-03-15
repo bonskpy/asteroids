@@ -2,13 +2,16 @@
 # the open-source library
 # throughout the file
 
-import pygame
 import sys
+
+import pygame
+
 from asteroid import Asteroid
 from asteroidfield import AsteroidField
-from player import Player
 from constants import *
+from player import Player
 from shot import Shot
+
 
 def main():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -45,20 +48,25 @@ def main():
             if event.type == pygame.QUIT:
                 return
         screen.fill((0, 0, 0))
-        
+
         for member in drawable:
             member.draw(screen)
-        
+
         dt = clock.tick(60) / 1000
         updatable.update(dt)
 
-        for member in asteroids:
-            if player.detect_collision(member):
+        for asteroid in asteroids:
+            if player.detect_collision(asteroid):
                 print("Game over!")
                 sys.exit()
 
+            for shot in shots:
+                if asteroid.detect_collision(shot):
+                    shot.kill()
+                    asteroid.split()
 
         pygame.display.flip()
+
 
 if __name__ == "__main__":
     main()
